@@ -1,5 +1,6 @@
 import Notiflix from 'notiflix';
 import axios from 'axios';
+import {createMarkup} from './markup';
 
 const form = document.querySelector('.search-form');
 const [inputValue] = document.getElementsByName('searchQuery');
@@ -51,7 +52,7 @@ async function onSearchImg() {
         'Sorry, there are no images matching your search query. Please try again.'
       );
     } else {
-      createMarkup(photos);
+      createMarkup(photos, gallery);
       toggleLoadMoreButton(photosLength);
       page++;
       const totalPage = Math.ceil(photos.totalHits / per_page);
@@ -67,41 +68,6 @@ async function onSearchImg() {
   } catch (error) {
     console.log(error.message);
   }
-}
-
-function createMarkup(photos) {
-  const markup = photos.hits
-    .map(
-      ({
-        webformatURL,
-        largeImageURL,
-        tags,
-        likes,
-        views,
-        comments,
-        downloads,
-      }) => {
-        return `<div class="photo-card">
-      <a href="${largeImageURL}"><img src="${webformatURL}" alt="${tags}" loading="lazy" width="446" height="250" /></a>
-      <div class="info">
-        <p class="info-item">
-          <b>Likes: ${likes}</b>
-        </p>
-        <p class="info-item">
-          <b>Views: ${views}</b>
-        </p>
-        <p class="info-item">
-          <b>Comments: ${comments}</b>
-        </p>
-        <p class="info-item">
-          <b>Downloads: ${downloads}</b>
-        </p>
-      </div>
-    </div>`;
-      }
-    )
-    .join(' ');
-  gallery.insertAdjacentHTML('beforeend', markup);
 }
 
 function toggleLoadMoreButton(length) {
